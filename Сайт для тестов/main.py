@@ -61,6 +61,9 @@ def init_db():
             db.session.commit()
             print("Создан пользователь по умолчанию: логин 'admin', пароль 'password123'")
 
+# Вызываем инициализацию базы данных при запуске приложения
+init_db()
+
 # --- МАРШРУТЫ (ROUTES) ---
 
 @app.route('/')
@@ -288,8 +291,8 @@ def open_browser():
     webbrowser.open("http://127.0.0.1:5001/")
 
 if __name__ == '__main__':
-    init_db()
     # Открываем браузер через 1 секунду после старта сервера
     threading.Timer(1.0, open_browser).start()
     # debug=False чтобы сервер не перезапускался дважды
     app.run(debug=False, port=5001)
+
