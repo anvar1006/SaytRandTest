@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white pb-0 pt-4 border-0">
+        <h3 class="mb-0 fw-bold">{{ action }} вопрос</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST">
+            <!-- Вопрос -->
+            <div class="mb-4 text-center">
+                <input type="text" name="text" class="form-control form-control-lg text-center fs-4 fw-semibold" required placeholder="Введите ваш вопрос здесь..." value="{{ q.text if q else '' }}" style="border-width: 0 0 2px 0; border-radius: 0; box-shadow: none;">
+            </div>
+            
+            <p class="text-muted text-center mb-3">Заполните варианты ответов и отметьте правильный:</p>
+
+            <!-- Сетка ответов 2x2 -->
+            {% set ans1 = q.correct_answer if q else '' %}
+            {% set ans2 = q.wrong_answer_1 if q else '' %}
+            {% set ans3 = q.wrong_answer_2 if q else '' %}
+            {% set ans4 = q.wrong_answer_3 if q else '' %}
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 h-100 position-relative">
+                        <div class="card-body">
+                            <div class="form-check position-absolute top-0 end-0 p-3">
+                                <input class="form-check-input fs-4 m-0 border-secondary" type="radio" name="correct_option" id="correct1" value="1" required {% if not q or (q and q.correct_answer == ans1) %}checked{% endif %}>
+                            </div>
+                            <label class="form-label text-muted ms-1"><span class="badge bg-secondary me-1">▲</span> Вариант 1</label>
+                            <textarea name="answer_1" class="form-control bg-white" rows="2" required>{{ ans1 }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 h-100 position-relative">
+                        <div class="card-body">
+                            <div class="form-check position-absolute top-0 end-0 p-3">
+                                <input class="form-check-input fs-4 m-0 border-secondary" type="radio" name="correct_option" id="correct2" value="2" required>
+                            </div>
+                            <label class="form-label text-muted ms-1"><span class="badge bg-secondary me-1">♦</span> Вариант 2</label>
+                            <textarea name="answer_2" class="form-control bg-white" rows="2" required>{{ ans2 }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 h-100 position-relative">
+                        <div class="card-body">
+                            <div class="form-check position-absolute top-0 end-0 p-3">
+                                <input class="form-check-input fs-4 m-0 border-secondary" type="radio" name="correct_option" id="correct3" value="3" required>
+                            </div>
+                            <label class="form-label text-muted ms-1"><span class="badge bg-secondary me-1">●</span> Вариант 3</label>
+                            <textarea name="answer_3" class="form-control bg-white" rows="2" required>{{ ans3 }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 h-100 position-relative">
+                        <div class="card-body">
+                            <div class="form-check position-absolute top-0 end-0 p-3">
+                                <input class="form-check-input fs-4 m-0 border-secondary" type="radio" name="correct_option" id="correct4" value="4" required>
+                            </div>
+                            <label class="form-label text-muted ms-1"><span class="badge bg-secondary me-1">■</span> Вариант 4</label>
+                            <textarea name="answer_4" class="form-control bg-white" rows="2" required>{{ ans4 }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end mt-4">
+                <a href="{{ url_for('admin') }}" class="btn btn-light px-4 btn-lg">Отмена</a>
+                <button type="submit" class="btn btn-primary px-5 btn-lg">Сохранить вопрос</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Стили для радиокнопок, чтобы было понятнее, какой ответ выбран правильным */
+.form-check-input:checked {
+    background-color: #198754; /* Зеленый цвет для правильного */
+    border-color: #198754;
+}
+</style>
+{% endblock %}

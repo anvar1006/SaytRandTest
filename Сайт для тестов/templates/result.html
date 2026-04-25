@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card text-center mb-4 border-0 shadow">
+    <div class="card-body py-5">
+        <h1 class="display-4 fw-bold {% if score == total and total > 0 %}text-success{% else %}text-primary{% endif %}">
+            {{ score }} из {{ total }}
+        </h1>
+        <p class="lead">Ваш итоговый результат</p>
+    </div>
+</div>
+
+<h4 class="mb-3">Детализация ответов:</h4>
+<div class="list-group mb-5 shadow-sm">
+    {% for text, is_correct in results %}
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if is_correct %}list-group-item-success{% else %}list-group-item-danger{% endif %}">
+            <div>{{ text }}</div>
+            {% if is_correct %}
+                <span class="badge bg-success rounded-pill px-3 py-2">Верно</span>
+            {% else %}
+                <span class="badge bg-danger rounded-pill px-3 py-2">Ошибка</span>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<div class="text-center">
+    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Пройти тест снова</a>
+</div>
+{% endblock %}

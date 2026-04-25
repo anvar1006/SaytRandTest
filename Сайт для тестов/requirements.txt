@@ -1,0 +1,7 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Limiter
+fpdf2
+Werkzeug
+gunicorn

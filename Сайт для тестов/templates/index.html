@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Пройти тест</h2>
+    <p class="text-muted">Вопросы и варианты ответов перемешиваются при каждой загрузке.</p>
+</div>
+
+{% if test_questions %}
+    <form action="{{ url_for('submit') }}" method="POST">
+        {% for item in test_questions %}
+            <div class="card mb-4 question-block">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ loop.index }}. {{ item.question.text }}</h5>
+                    <hr>
+                    {% set letters = ['А', 'Б', 'В', 'Г'] %}
+                    {% for ans in item.answers %}
+                        <div class="form-check fs-5 mb-2">
+                            <input class="form-check-input" type="radio" name="q_{{ item.question.id }}" id="q_{{ item.question.id }}_{{ loop.index }}" value="{{ ans.text }}" required>
+                            <label class="form-check-label" style="cursor: pointer;" for="q_{{ item.question.id }}_{{ loop.index }}">
+                                <span class="badge bg-secondary me-2">{{ letters[loop.index0] }}</span> {{ ans.text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-success btn-lg w-100 shadow">Завершить тест и проверить результаты</button>
+    </form>
+{% else %}
+    <div class="alert alert-info text-center">
+        Вопросов пока нет. Учитель должен добавить их в панели управления.
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Управление вопросами</h2>
+    <div>
+        <!-- Кнопка запускает модальное окно -->
+        <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+            📄 Экспорт в PDF
+        </button>
+        <a href="{{ url_for('add_question') }}" class="btn btn-primary">
+            + Добавить вопрос
+        </a>
+    </div>
+</div>
+
+<!-- Модальное окно для экспорта -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('export_pdf') }}" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exportModalLabel">Экспорт теста</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="pdf_title" class="form-label">Заголовок или сообщение в начале теста:</label>
+              <textarea class="form-control" id="pdf_title" name="pdf_title" rows="2">Медицинское тестирование</textarea>
+              <div class="form-text">К этому заголовку автоматически добавится "Вариант 1", "Вариант 2" и т.д.</div>
+            </div>
+            <div class="mb-3">
+              <label for="num_variants" class="form-label">Количество вариантов:</label>
+              <input type="number" class="form-control" id="num_variants" name="num_variants" value="1" min="1" max="100">
+              <div class="form-text">Сколько уникальных перемешанных вариантов нужно сгенерировать.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-primary">Сгенерировать PDF</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if questions %}
+    <div class="table-responsive">
+        <table class="table table-hover bg-white" style="border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <thead class="table-dark">
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="35%">Вопрос</th>
+                    <th width="40%">Варианты ответов</th>
+                    <th width="20%" class="text-center">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <td class="align-middle">{{ q.id }}</td>
+                    <td class="align-middle">{{ q.text[:80] }}{% if q.text|length > 80 %}...{% endif %}</td>
+                    <td class="align-middle">
+                        <div class="mb-1 text-success fw-semibold"><span class="badge bg-success me-1">✓</span>{{ q.correct_answer }}</div>
+                        <div class="text-muted small mb-1"><span class="badge bg-secondary me-1">✗</span>{{ q.wrong_answer_1 }}</div>
+                        <div class="text-muted small mb-1"><span class="badge bg-secondary me-1">✗</span>{{ q.wrong_answer_2 }}</div>
+                        <div class="text-muted small"><span class="badge bg-secondary me-1">✗</span>{{ q.wrong_answer_3 }}</div>
+                    </td>
+                    <td class="align-middle text-center">
+                        <a href="{{ url_for('edit_question', id=q.id) }}" class="btn btn-sm btn-outline-primary">Ред.</a>
+                        <form action="{{ url_for('delete_question', id=q.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Вы уверены, что хотите удалить этот вопрос?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Удал.</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-warning text-center p-5">
+        <h4>Нет добавленных вопросов</h4>
+        <p>Нажмите кнопку «Добавить вопрос», чтобы создать свой первый вопрос для теста.</p>
+        <a href="{{ url_for('add_question') }}" class="btn btn-primary mt-2">Добавить первый вопрос</a>
+    </div>
+{% endif %}
+{% endblock %}
